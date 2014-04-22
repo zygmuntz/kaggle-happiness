@@ -1,4 +1,7 @@
+# random forest and naive bayes
+
 library( randomForest )
+library( e1071 )
 library( caTools )
 
 setwd( '/path/to/showofhands/data' )
@@ -41,6 +44,8 @@ drops = c( 'UserID' )
 train = train[, !( names( train ) %in% drops )]
 test = test[, !( names( test ) %in% drops )]
 
+# random forest
+
 ntree = 1000
 
 rf = randomForest( as.factor( Happy ) ~ ., data = train, ntree = ntree, do.trace = 10 )
@@ -49,6 +54,24 @@ probs =  p[,2]
 
 auc = colAUC( probs, y_test )
 auc = auc[1]
-cat( "auc:", auc, "\n" )
+print( "Random forest AUC:", auc )
 
 varImpPlot( rf, n.var = 20 )
+
+# naive bayes
+
+nb = naiveBayes( Happy ~ ., data = train )
+
+# for predicting
+drops = c( 'Happy' )
+x_test = test[, !( names( test ) %in% drops )]
+
+p = predict( nb, x_test, type = 'raw' )
+probs =  p[,2]
+
+auc = colAUC( probs, y_test )
+auc = auc[1]
+
+cat( "Naive Bayes AUC:", auc, "\n" )
+# auc: 0.707359
+
