@@ -41,13 +41,15 @@ data$YOB[is.na(data$YOB)] = 0
 
 # train / test split
 
-split_at = 0.8
+p_train = 0.8
 n = nrow( data )
-train_len = round( n * split_at )
+train_len = round( n * p_train )
 test_start = train_len + 1
 i = sample.int( n )
-train = data[1:train_len,]
-test = data[test_start:n,]
+train_i = i[1:train_len]
+test_i = i[test_start:n]
+train = data[train_i,]
+test = data[test_i,]
 
 
 # random forest
@@ -64,6 +66,7 @@ auc = auc[1]
 cat( "Random forest AUC:", auc )
 
 varImpPlot( rf, n.var = 20 )
+
 
 # naive bayes
 
@@ -82,6 +85,5 @@ auc = auc[1]
 cat( "\n\n" )
 cat( "Naive Bayes AUC:", auc, "\n" )
 
-# Naive Bayes AUC: 0.7141944
 
 
