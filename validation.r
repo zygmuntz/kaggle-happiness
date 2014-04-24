@@ -6,15 +6,14 @@ library( caTools )
 
 setwd( '/path/to/showofhands/data' )
 
-# we split the train set for validation
-train = read.csv( 'train_v.csv' )
-test = read.csv( 'test_v.csv' )
-
-cols = colnames( train )
+data = read.csv( 'train.csv' )
 
 # which columns are not factors?
+
+cols = colnames( data )
+
 for ( i in 1:length( cols )) {
-    col_class = class( train[,i] )
+    col_class = class( data[,i] )
     if ( col_class != 'factor' ) {
         cat( cols[i], col_class, "\n" )
     }
@@ -27,26 +26,34 @@ Happy integer
 votes integer
 "
 
-y = as.factor( train$Happy )
-y_test = as.factor( test$Happy )
-
-# clean up YOB for random forest
-train$YOB[train$YOB < 1930] = 0
-test$YOB[test$YOB < 1930] = 0
-
-train$YOB[train$YOB > 2004] = 0
-test$YOB[test$YOB > 2004] = 0
-
-train$YOB[is.na( train$YOB )] = 0
-test$YOB[is.na( test$YOB )] = 0
+# clean-up
 
 drops = c( 'UserID' )
-train = train[, !( names( train ) %in% drops )]
-test = test[, !( names( test ) %in% drops )]
+data = data[, !( names( data ) %in% drops )]
+
+data$Happy = as.factor( data$Happy )
+
+# clean up YOB
+
+data$YOB[data$YOB < 1930] = 0
+data$YOB[data$YOB > 2004] = 0
+data$YOB[is.na(data$YOB)] = 0
+
+# train / test split
+
+split_at = 0.8
+n = nrow( data )
+train_len = round( n * split_at )
+test_start = train_len + 1
+i = sample.int( n )
+train = data[1:train_len,]
+test = data[test_start:n,]
+
 
 # random forest
 
-ntree = 1000
+y_test = as.factor( test$Happy )
+ntree = 100
 
 rf = randomForest( as.factor( Happy ) ~ ., data = train, ntree = ntree, do.trace = 10 )
 p <- predict( rf, test, type = 'prob' )
@@ -54,7 +61,7 @@ probs =  p[,2]
 
 auc = colAUC( probs, y_test )
 auc = auc[1]
-print( "Random forest AUC:", auc )
+cat( "Random forest AUC:", auc )
 
 varImpPlot( rf, n.var = 20 )
 
@@ -72,6 +79,9 @@ probs =  p[,2]
 auc = colAUC( probs, y_test )
 auc = auc[1]
 
+cat( "\n\n" )
 cat( "Naive Bayes AUC:", auc, "\n" )
-# auc: 0.707359
+
+# Naive Bayes AUC: 0.7141944
+
 
