@@ -45,9 +45,11 @@ p_train = 0.8
 n = nrow( data )
 train_len = round( n * p_train )
 test_start = train_len + 1
+
 i = sample.int( n )
 train_i = i[1:train_len]
 test_i = i[test_start:n]
+
 train = data[train_i,]
 test = data[test_i,]
 
