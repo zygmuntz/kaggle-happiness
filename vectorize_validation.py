@@ -1,6 +1,6 @@
 """
 vectorize categorical variables
-optionally train a random forest, get validation AUC
+optionally train an SVM and a random forest, get validation AUC
 
 importing from another script:
 from vectorize_validation import y_train, x_train, y_test, x_test
@@ -12,14 +12,15 @@ import sqlite3
 
 from math import sqrt
 from sklearn.feature_extraction import DictVectorizer as DV
+from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier as RF
 from sklearn.metrics import roc_auc_score as AUC
 
 ###
 
-data_dir = '/path/to/your/data/dir/'	# need trailing slash
+data_dir = '/path/to/your/data/dir/'	# needs trailing slash
 
-# validation split, both files with Happy and headers
+# validation split, both files with headers and the Happy column
 train_file = data_dir + 'train_v.csv'
 test_file = data_dir + 'test_v.csv'
 
@@ -83,7 +84,27 @@ x_test = np.hstack(( x_num_test, vec_x_cat_test ))
 
 if __name__ == "__main__":
 
-	print "training..."
+	# SVM looks much better in validation
+
+	print "training SVM..."
+	
+	# although one needs to choose these hyperparams
+	C = 173
+	gamma = 1.31e-5
+	shrinking = True
+
+	probability = True
+	verbose = True
+
+	svc = SVC( C = C, gamma = gamma, shrinking = shrinking, probability = probability, verbose = verbose )
+	svc.fit( x_train, y_train )
+	p = svc.predict_proba( x_test )	
+	
+	auc = AUC( y_test, p[:,1] )
+	print "SVM AUC", auc	
+	
+
+	print "training random forest..."
 
 	n_trees = 100
 	max_features = int( round( sqrt( x_train.shape[1] ) * 2 ))		# try more features at each split
@@ -97,7 +118,7 @@ if __name__ == "__main__":
 	p = rf.predict_proba( x_test )
 
 	auc = AUC( y_test, p[:,1] )
-	print "AUC", auc
+	print "RF AUC", auc
 
 	# AUC 0.701579086548
 	# AUC 0.676126704696
