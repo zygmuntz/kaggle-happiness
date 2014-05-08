@@ -70,8 +70,8 @@ vec_x_cat_test = vectorizer.transform( x_cat_test )
 
 # complete x
 
-x_train = np.dot( np.hstack(( x_num_train, vec_x_cat_train )), A )
-x_test = np.dot( np.hstack(( x_num_test, vec_x_cat_test )), A )
+x_train = np.hstack(( x_num_train, vec_x_cat_train ))
+x_test = np.hstack(( x_num_test, vec_x_cat_test ))
 
 if __name__ == "__main__":
 
