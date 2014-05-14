@@ -1,7 +1,7 @@
 Amelia
 ======
 
-Impute missing values, train many models, predict, bag.
+Impute missing values, train many models, predict, bag. See [http://fastml.com/impute-missing-values-with-amelia/](http://fastml.com/impute-missing-values-with-amelia/) for description.
 
 	impute.r
 	predict_many.py
