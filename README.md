@@ -9,6 +9,8 @@ Code for [The Analytics Edge (15.071x) competition](http://www.kaggle.com/c/the-
 	vectorize_and_predict_inplace.py - convert categorical to -1/0/1, train, write predictions	
 	vectorize_validation.py - convert data to numbers only, train, get validation score
 	
+Get 0.74568 public / 0.77761 private AUC with `vectorize_and_predict_inplace.py`.
+	
 For description, see: 
 
 * [http://fastml.com/predicting-happiness-from-demographics-and-poll-answers/](http://fastml.com/predicting-happiness-from-demographics-and-poll-answers/)
