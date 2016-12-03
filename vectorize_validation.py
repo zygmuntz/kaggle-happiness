@@ -66,8 +66,8 @@ cat_test = test.drop( numeric_cols + [ 'UserID', 'Happy'], axis = 1 )
 cat_train.fillna( 'NA', inplace = True )
 cat_test.fillna( 'NA', inplace = True )
 
-x_cat_train = cat_train.T.to_dict().values()
-x_cat_test = cat_test.T.to_dict().values()
+x_cat_train = cat_train.to_dict( orient = 'records' )
+x_cat_test = cat_test.to_dict( orient = 'records' )
 
 # vectorize
 
